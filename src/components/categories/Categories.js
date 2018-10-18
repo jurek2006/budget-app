@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { firestoreConnect } from "react-redux-firebase";
+import Spinner from "../layout/Spinner";
 
 export class Categories extends Component {
     render() {
@@ -11,7 +12,9 @@ export class Categories extends Component {
         if (categories) {
             return (
                 <div className="card m-2">
-                    <h1 className="card-header ">Kategorie</h1>
+                    <div className="card-header ">
+                        <h1>Kategorie</h1>
+                    </div>
                     <ul className="list-group list-group-flush">
                         {categories.map(category => (
                             <li className="list-group-item" key={category.id}>
@@ -22,7 +25,7 @@ export class Categories extends Component {
                 </div>
             );
         } else {
-            return <h1>Loading...</h1>;
+            return <Spinner />;
         }
     }
 }
