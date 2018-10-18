@@ -1,21 +1,12 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { compose } from "redux";
+import { connect } from "react-redux";
+import { firestoreConnect } from "react-redux-firebase";
 
 export class Categories extends Component {
     render() {
-        const categories = [
-            {
-                id: "445635",
-                name: "jedzenie"
-            },
-            {
-                id: "3546547",
-                name: "rozrywka"
-            },
-            {
-                id: "34457567",
-                name: "opłaty"
-            }
-        ];
+        const { categories } = this.props;
 
         if (categories) {
             return (
@@ -36,4 +27,14 @@ export class Categories extends Component {
     }
 }
 
-export default Categories;
+Categories.propTypes = {
+    firestore: PropTypes.object.isRequired,
+    clients: PropTypes.array
+};
+
+export default compose(
+    firestoreConnect([{ collection: "categories" }]),
+    connect((state, props) => ({
+        categories: state.firestore.ordered.categories
+    }))
+)(Categories);
