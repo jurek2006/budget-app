@@ -1,6 +1,10 @@
 import React, { Component } from "react";
 import "./App.css";
-import { Collapse, Button, Card, CardBody } from "reactstrap";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import AppNavbar from "./components/layout/AppNavbar";
+import Dashboard from "./components/dashboard/Dashboard";
+import Expenses from "./components/expenses/Expenses";
+import Categories from "./components/categories/Categories";
 
 class App extends Component {
     constructor(props) {
@@ -15,9 +19,20 @@ class App extends Component {
 
     render() {
         return (
-            <div className="App">
-                <h1>Hello</h1>
-            </div>
+            <Router>
+                <div className="App">
+                    <AppNavbar />
+                    <Switch>
+                        <Route exact path="/" component={Dashboard} />
+                        <Route exact path="/expenses" component={Expenses} />
+                        <Route
+                            exact
+                            path="/categories"
+                            component={Categories}
+                        />
+                    </Switch>
+                </div>
+            </Router>
         );
     }
 }
