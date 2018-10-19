@@ -7,6 +7,7 @@ import AppNavbar from "./components/layout/AppNavbar";
 import Dashboard from "./components/dashboard/Dashboard";
 import Expenses from "./components/expenses/Expenses";
 import Categories from "./components/categories/Categories";
+import AddCategory from "./components/categories/AddCategory";
 
 class App extends Component {
     constructor(props) {
@@ -36,6 +37,11 @@ class App extends Component {
                                 exact
                                 path="/categories"
                                 component={Categories}
+                            />
+                            <Route
+                                exact
+                                path="/categories/add"
+                                component={AddCategory}
                             />
                         </Switch>
                     </div>

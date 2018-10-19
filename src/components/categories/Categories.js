@@ -4,6 +4,7 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { firestoreConnect } from "react-redux-firebase";
 import Spinner from "../layout/Spinner";
+import { Link } from "react-router-dom";
 
 export class Categories extends Component {
     render() {
@@ -12,8 +13,21 @@ export class Categories extends Component {
         if (categories) {
             return (
                 <div className="card m-2">
-                    <div className="card-header ">
-                        <h1>Kategorie</h1>
+                    <div className="card-header container-fluid">
+                        <div className="row align-items-center">
+                            <div className="col">
+                                <h1>Kategorie</h1>
+                            </div>
+                            <div className="col-auto">
+                                <Link
+                                    className="btn btn-primary ml-auto"
+                                    to="/categories/add"
+                                >
+                                    <i className="fas fa-plus" /> Dodaj
+                                    kategorię
+                                </Link>
+                            </div>
+                        </div>
                     </div>
                     <ul className="list-group list-group-flush">
                         {categories.map(category => (
