@@ -8,6 +8,7 @@ import Dashboard from "./components/dashboard/Dashboard";
 import Expenses from "./components/expenses/Expenses";
 import Categories from "./components/categories/Categories";
 import AddCategory from "./components/categories/AddCategory";
+import EditCategory from "./components/categories/EditCategory";
 
 class App extends Component {
     constructor(props) {
@@ -42,6 +43,11 @@ class App extends Component {
                                 exact
                                 path="/categories/add"
                                 component={AddCategory}
+                            />
+                            <Route
+                                exact
+                                path="/categories/edit/:id"
+                                component={EditCategory}
                             />
                         </Switch>
                     </div>

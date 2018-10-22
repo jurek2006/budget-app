@@ -32,7 +32,25 @@ export class Categories extends Component {
                     <ul className="list-group list-group-flush">
                         {categories.map(category => (
                             <li className="list-group-item" key={category.id}>
-                                {category.name}
+                                {category.name}{" "}
+                                <a href="#!">
+                                    <i
+                                        className="fas fa-trash"
+                                        style={{
+                                            cursor: "pointer",
+                                            float: "right",
+                                            color: "red"
+                                        }}
+                                    />
+                                </a>
+                                <Link
+                                    to={`/categories/edit/${category.id}`}
+                                    style={{
+                                        float: "right"
+                                    }}
+                                >
+                                    <i className="fas fa-edit" />
+                                </Link>
                             </li>
                         ))}
                     </ul>
