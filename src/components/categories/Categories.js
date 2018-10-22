@@ -7,6 +7,11 @@ import Spinner from "../layout/Spinner";
 import { Link } from "react-router-dom";
 
 export class Categories extends Component {
+    handleDeleteCategory = contactId => {
+        const { firestore } = this.props;
+        firestore.delete({ collection: "categories", doc: contactId });
+    };
+
     render() {
         const { categories } = this.props;
 
@@ -30,30 +35,48 @@ export class Categories extends Component {
                         </div>
                     </div>
                     <ul className="list-group list-group-flush">
-                        {categories.map(category => (
-                            <li className="list-group-item" key={category.id}>
-                                {category.name}{" "}
-                                <a href="#!">
-                                    <i
-                                        className="fas fa-trash"
-                                        style={{
-                                            cursor: "pointer",
-                                            float: "right",
-                                            color: "red"
-                                        }}
-                                    />
-                                </a>
-                                <Link
-                                    to={`/categories/edit/${category.id}`}
-                                    style={{
-                                        float: "right"
-                                    }}
+                        {categories.length > 0 &&
+                            categories.map(category => (
+                                <li
+                                    className="list-group-item"
+                                    key={category.id}
                                 >
-                                    <i className="fas fa-edit" />
-                                </Link>
-                            </li>
-                        ))}
+                                    {category.name}{" "}
+                                    <a
+                                        href="#!"
+                                        className="text-danger mx-1"
+                                        style={{
+                                            float: "right"
+                                        }}
+                                        onClick={this.handleDeleteCategory.bind(
+                                            this,
+                                            category.id
+                                        )}
+                                    >
+                                        <i className="fas fa-trash" />
+                                    </a>
+                                    <Link
+                                        className="mx-1"
+                                        to={`/categories/edit/${category.id}`}
+                                        style={{
+                                            float: "right"
+                                        }}
+                                    >
+                                        <i className="fas fa-edit" />
+                                    </Link>
+                                </li>
+                            ))}
                     </ul>
+                    {categories.length === 0 && (
+                        <div>
+                            <p className="text-danger text-center mt-2">
+                                Nie masz jeszcze żadnych kategorii{" "}
+                                <Link to="/categories/add">
+                                    Dodaj kategorię
+                                </Link>
+                            </p>
+                        </div>
+                    )}
                 </div>
             );
         } else {
