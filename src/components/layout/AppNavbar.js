@@ -24,7 +24,7 @@ export default function AppNavbar() {
                         </NavLink>
                     </li>
                     <li className="nav-item">
-                        <NavLink className="nav-link" to="/expenses">
+                        <NavLink className="nav-link" to="/operations">
                             <i className="fas fa-money-bill-wave" /> Wydatki
                         </NavLink>
                     </li>

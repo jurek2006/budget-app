@@ -5,7 +5,7 @@ import { Provider } from "react-redux";
 import store from "./store";
 import AppNavbar from "./components/layout/AppNavbar";
 import Dashboard from "./components/dashboard/Dashboard";
-import Expenses from "./components/expenses/Expenses";
+import BudgetOperations from "./components/budgetOperations/BudgetOperations";
 import Categories from "./components/categories/Categories";
 import AddCategory from "./components/categories/AddCategory";
 import EditCategory from "./components/categories/EditCategory";
@@ -31,8 +31,8 @@ class App extends Component {
                             <Route exact path="/" component={Dashboard} />
                             <Route
                                 exact
-                                path="/expenses"
-                                component={Expenses}
+                                path="/operations"
+                                component={BudgetOperations}
                             />
                             <Route
                                 exact
