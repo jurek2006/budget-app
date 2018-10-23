@@ -86,8 +86,7 @@ export class Categories extends Component {
 }
 
 Categories.propTypes = {
-    firestore: PropTypes.object.isRequired,
-    clients: PropTypes.array
+    firestore: PropTypes.object.isRequired
 };
 
 export default compose(
