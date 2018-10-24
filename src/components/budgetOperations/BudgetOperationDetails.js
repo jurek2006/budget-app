@@ -52,7 +52,6 @@ export class BudgetOperationDetails extends Component {
 
     handleDeleteContact = operationId => {
         const { firestore, history } = this.props;
-        console.log(operationId);
         firestore
             .delete({ collection: "budgetOperations", doc: operationId })
             .then(() => history.push("/operations"));

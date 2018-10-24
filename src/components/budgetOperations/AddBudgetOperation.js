@@ -1,10 +1,12 @@
 import React, { Component } from "react";
 import { firestoreConnect } from "react-redux-firebase";
 import PropTypes from "prop-types";
+import DatePicker from "react-datepicker";
+import "../../../node_modules/react-datepicker/dist/react-datepicker.css";
 
 export class AddBudgetOperation extends Component {
     state = {
-        date: "",
+        date: null,
         value: "",
         name: ""
     };
@@ -14,14 +16,14 @@ export class AddBudgetOperation extends Component {
 
         const newOperation = {
             ...this.state,
-            date: new Date(2018, 9, 24)
+            date: this.state.date && this.state.date.toDate()
         };
-        console.log(newOperation);
         const { firestore, history } = this.props;
 
         if (
             Number(newOperation.value) > 0 &&
-            newOperation.name.trim().length > 0
+            newOperation.name.trim().length > 0 &&
+            newOperation.date
         ) {
             firestore
                 .add({ collection: "budgetOperations" }, newOperation)
@@ -31,6 +33,12 @@ export class AddBudgetOperation extends Component {
 
     onChange = e => {
         this.setState({ [e.target.name]: e.target.value });
+    };
+
+    handleDateChange = date => {
+        this.setState({
+            date
+        });
     };
 
     render() {
@@ -44,13 +52,12 @@ export class AddBudgetOperation extends Component {
                     <form onSubmit={this.onSubmit}>
                         <div className="form-group">
                             <label htmlFor="date">Data:</label>
-                            <input
-                                type="text"
-                                name="date"
-                                readOnly
+                            <DatePicker
+                                selected={date}
+                                onChange={this.handleDateChange}
+                                placeholderText="Wybierz datę"
+                                dateFormat="DD.MM.YYYY"
                                 className="form-control"
-                                value={date}
-                                onChange={this.onChange}
                             />
                         </div>
                         <div className="form-group">
