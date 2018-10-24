@@ -27,7 +27,6 @@ export class EditCategory extends Component {
     };
 
     render() {
-        console.log(this.props.category);
         const { category } = this.props;
         if (category) {
             return (
@@ -69,7 +68,8 @@ export class EditCategory extends Component {
 }
 
 EditCategory.propType = {
-    firestore: PropTypes.object.isRequired
+    firestore: PropTypes.object.isRequired,
+    category: PropTypes.object.isRequired
 };
 
 export default compose(

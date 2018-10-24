@@ -10,6 +10,7 @@ import Categories from "./components/categories/Categories";
 import AddCategory from "./components/categories/AddCategory";
 import EditCategory from "./components/categories/EditCategory";
 import AddBudgetOperation from "./components/budgetOperations/AddBudgetOperation";
+import BudgetOperationDetails from "./components/budgetOperations/BudgetOperationDetails";
 
 class App extends Component {
     constructor(props) {
@@ -39,6 +40,11 @@ class App extends Component {
                                 exact
                                 path="/operations/add"
                                 component={AddBudgetOperation}
+                            />
+                            <Route
+                                exact
+                                path="/operation/:id"
+                                component={BudgetOperationDetails}
                             />
                             <Route
                                 exact

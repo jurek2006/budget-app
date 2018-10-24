@@ -49,7 +49,15 @@ export class BudgetOperations extends Component {
                                         </td>
                                         <td>{operation.value}</td>
                                         <td>{operation.name}</td>
-                                        <td>Szczegóły</td>
+                                        <td>
+                                            <Link
+                                                to={`/operation/${
+                                                    operation.id
+                                                }`}
+                                            >
+                                                Szczegóły
+                                            </Link>
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>
