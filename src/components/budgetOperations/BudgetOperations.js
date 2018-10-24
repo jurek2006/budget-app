@@ -42,9 +42,10 @@ export class BudgetOperations extends Component {
                                 {operations.map(operation => (
                                     <tr key={operation.id}>
                                         <td>
-                                            {operation.date
-                                                .toDate()
-                                                .toLocaleDateString()}
+                                            {operation.date &&
+                                                operation.date
+                                                    .toDate()
+                                                    .toLocaleDateString()}
                                         </td>
                                         <td>{operation.value}</td>
                                         <td>{operation.name}</td>

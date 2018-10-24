@@ -19,7 +19,6 @@ export class AddCategory extends Component {
         const { firestore, history } = this.props;
 
         if (!(newCategory.name.trim() === "")) {
-            console.log("firestore");
             firestore
                 .add({ collection: "categories" }, newCategory)
                 .then(() => history.push("/categories"));
@@ -28,32 +27,30 @@ export class AddCategory extends Component {
 
     render() {
         return (
-            <div>
-                <div className="card m-2">
-                    <div className="card-header">
-                        <h1>Dodaj nową kategorię</h1>{" "}
-                    </div>
-                    <div className="card-body">
-                        <form onSubmit={this.onSubmit}>
-                            <div className="from-group">
-                                <label htmlFor="name">Nazwa kategorii:</label>
-                                <input
-                                    type="text"
-                                    name="name"
-                                    className="form-control"
-                                    minLength="2"
-                                    required
-                                    value={this.state.name}
-                                    onChange={this.onChange}
-                                />
-                            </div>
+            <div className="card m-2">
+                <div className="card-header">
+                    <h2>Dodaj nową kategorię</h2>{" "}
+                </div>
+                <div className="card-body">
+                    <form onSubmit={this.onSubmit}>
+                        <div className="from-group">
+                            <label htmlFor="name">Nazwa kategorii:</label>
                             <input
-                                type="submit"
-                                value="Zapisz"
-                                className="btn btn-primary btn-block mt-2"
+                                type="text"
+                                name="name"
+                                className="form-control"
+                                minLength="2"
+                                required
+                                value={this.state.name}
+                                onChange={this.onChange}
                             />
-                        </form>
-                    </div>
+                        </div>
+                        <input
+                            type="submit"
+                            value="Zapisz"
+                            className="btn btn-primary btn-block mt-2"
+                        />
+                    </form>
                 </div>
             </div>
         );
