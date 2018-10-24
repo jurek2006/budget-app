@@ -12,7 +12,11 @@ export class AddBudgetOperation extends Component {
     onSubmit = e => {
         e.preventDefault();
 
-        const newOperation = this.state;
+        const newOperation = {
+            ...this.state,
+            date: new Date(2018, 9, 24)
+        };
+        console.log(newOperation);
         const { firestore, history } = this.props;
 
         if (
