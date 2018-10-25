@@ -4,15 +4,25 @@ import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import Spinner from "../layout/Spinner";
+import DatePicker from "react-datepicker";
+import "../../../node_modules/react-datepicker/dist/react-datepicker.css";
+import moment from "moment";
 
 export class BudgetOperationDetails extends Component {
     state = {
+        date: null, //date as Moment or null if not given
         isEditingOn: false
     };
 
     static getDerivedStateFromProps(props, state) {
+        // if got operation data set it to the state
         if (props.operation && props.operation.id !== state.id) {
-            return props.operation;
+            return {
+                ...props.operation,
+                date: props.operation.date
+                    ? moment(props.operation.date.toDate()) //converts date from firestore type to Moment which is used by DatePicker
+                    : null
+            };
         }
         return null;
     }
@@ -21,11 +31,11 @@ export class BudgetOperationDetails extends Component {
         e.preventDefault();
 
         const { firestore, history } = this.props;
+        const { value, date } = this.state;
         const updOperation = {
             ...this.state,
-            name: this.state.name.trim(),
-            value:
-                this.state.value.trim().length > 0 ? this.state.value.trim() : 0
+            value: value.length > 0 ? value : 0,
+            date: date ? date.toDate() : null //convert date from moment to JS Data (handled in firestore)
         };
 
         // update in firestore only if value > 0 and non empty name given
@@ -41,7 +51,7 @@ export class BudgetOperationDetails extends Component {
 
     onChange = e => {
         console.log(e.target.value);
-        this.setState({ [e.target.name]: e.target.value });
+        this.setState({ [e.target.name]: e.target.value.trim() });
     };
 
     handleTurnEditingOn = () => {
@@ -56,6 +66,12 @@ export class BudgetOperationDetails extends Component {
         firestore
             .delete({ collection: "budgetOperations", doc: operationId })
             .then(() => history.push("/operations"));
+    };
+
+    handleDateChange = date => {
+        this.setState({
+            date
+        });
     };
 
     render() {
@@ -94,16 +110,13 @@ export class BudgetOperationDetails extends Component {
                         <form onSubmit={this.onSubmit}>
                             <div className="form-group">
                                 <label htmlFor="date">Data:</label>
-                                <input
-                                    type="text"
-                                    name="date"
-                                    disabled={!isEditingOn}
+                                <DatePicker
+                                    selected={date}
+                                    onChange={this.handleDateChange}
+                                    placeholderText="Wybierz datę"
+                                    dateFormat="DD.MM.YYYY"
                                     className="form-control"
-                                    onChange={this.onChange}
-                                    value={
-                                        date &&
-                                        date.toDate().toLocaleDateString()
-                                    }
+                                    disabled={!isEditingOn}
                                 />
                             </div>
                             <div className="form-group">
