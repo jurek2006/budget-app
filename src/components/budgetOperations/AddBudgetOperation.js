@@ -11,7 +11,7 @@ export class AddBudgetOperation extends Component {
         name: ""
     };
 
-    onSubmit = e => {
+    handleSubmit = e => {
         e.preventDefault();
 
         const newOperation = {
@@ -31,14 +31,12 @@ export class AddBudgetOperation extends Component {
         }
     };
 
-    onChange = e => {
-        this.setState({ [e.target.name]: e.target.value });
+    handleFieldChange = e => {
+        this.setState({ [e.target.name]: e.target.value.trim() });
     };
 
     handleDateChange = date => {
-        this.setState({
-            date
-        });
+        this.setState({ date });
     };
 
     render() {
@@ -49,7 +47,7 @@ export class AddBudgetOperation extends Component {
                     <h2>Dodaj wydatek/wpływ</h2>
                 </div>
                 <div className="card-body">
-                    <form onSubmit={this.onSubmit}>
+                    <form onSubmit={this.handleSubmit}>
                         <div className="form-group">
                             <label htmlFor="date">Data:</label>
                             <DatePicker
@@ -67,7 +65,7 @@ export class AddBudgetOperation extends Component {
                                 name="value"
                                 className="form-control"
                                 value={value}
-                                onChange={this.onChange}
+                                onChange={this.handleFieldChange}
                             />
                         </div>
                         <div className="form-group">
@@ -77,7 +75,7 @@ export class AddBudgetOperation extends Component {
                                 name="name"
                                 className="form-control"
                                 value={name}
-                                onChange={this.onChange}
+                                onChange={this.handleFieldChange}
                             />
                         </div>
                         <input

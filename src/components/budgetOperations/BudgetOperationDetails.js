@@ -15,7 +15,7 @@ export class BudgetOperationDetails extends Component {
     };
 
     static getDerivedStateFromProps(props, state) {
-        // if got operation data set it to the state
+        // if got operation data from firestore set it to the state
         if (props.operation && props.operation.id !== state.id) {
             const { date, value, name, id } = props.operation;
             return {
@@ -30,7 +30,7 @@ export class BudgetOperationDetails extends Component {
         return null;
     }
 
-    onSubmit = e => {
+    handleSubmit = e => {
         e.preventDefault();
 
         const { firestore, history } = this.props;
@@ -52,8 +52,12 @@ export class BudgetOperationDetails extends Component {
         }
     };
 
-    onChange = e => {
+    handleFieldChange = e => {
         this.setState({ [e.target.name]: e.target.value.trim() });
+    };
+
+    handleDateChange = date => {
+        this.setState({ date });
     };
 
     handleTurnEditingOn = () => {
@@ -68,12 +72,6 @@ export class BudgetOperationDetails extends Component {
         firestore
             .delete({ collection: "budgetOperations", doc: operationId })
             .then(() => history.push("/operations"));
-    };
-
-    handleDateChange = date => {
-        this.setState({
-            date
-        });
     };
 
     render() {
@@ -109,7 +107,7 @@ export class BudgetOperationDetails extends Component {
                         </div>
                     </div>
                     <div className="card-body">
-                        <form onSubmit={this.onSubmit}>
+                        <form onSubmit={this.handleSubmit}>
                             <div className="form-group">
                                 <label htmlFor="date">Data:</label>
                                 <DatePicker
@@ -128,7 +126,7 @@ export class BudgetOperationDetails extends Component {
                                     name="value"
                                     className="form-control"
                                     value={value}
-                                    onChange={this.onChange}
+                                    onChange={this.handleFieldChange}
                                     disabled={!isEditingOn}
                                 />
                             </div>
@@ -139,7 +137,7 @@ export class BudgetOperationDetails extends Component {
                                     name="name"
                                     className="form-control"
                                     value={name}
-                                    onChange={this.onChange}
+                                    onChange={this.handleFieldChange}
                                     disabled={!isEditingOn}
                                 />
                             </div>
