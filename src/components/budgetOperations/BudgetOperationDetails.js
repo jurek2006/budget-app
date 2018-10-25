@@ -17,10 +17,13 @@ export class BudgetOperationDetails extends Component {
     static getDerivedStateFromProps(props, state) {
         // if got operation data set it to the state
         if (props.operation && props.operation.id !== state.id) {
+            const { date, value, name, id } = props.operation;
             return {
-                ...props.operation,
-                date: props.operation.date
-                    ? moment(props.operation.date.toDate()) //converts date from firestore type to Moment which is used by DatePicker
+                id,
+                value,
+                name,
+                date: date
+                    ? moment(date.toDate()) //converts date from firestore type to Moment which is used by DatePicker
                     : null
             };
         }
@@ -31,9 +34,9 @@ export class BudgetOperationDetails extends Component {
         e.preventDefault();
 
         const { firestore, history } = this.props;
-        const { value, date } = this.state;
+        const { value, date, name } = this.state;
         const updOperation = {
-            ...this.state,
+            name,
             value: value.length > 0 ? value : 0,
             date: date ? date.toDate() : null //convert date from moment to JS Data (handled in firestore)
         };
@@ -50,7 +53,6 @@ export class BudgetOperationDetails extends Component {
     };
 
     onChange = e => {
-        console.log(e.target.value);
         this.setState({ [e.target.name]: e.target.value.trim() });
     };
 
