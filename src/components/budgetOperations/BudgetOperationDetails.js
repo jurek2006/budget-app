@@ -6,33 +6,33 @@ import { connect } from "react-redux";
 import Spinner from "../layout/Spinner";
 
 export class BudgetOperationDetails extends Component {
-    constructor(props) {
-        super(props);
-
-        this.valueInput = React.createRef();
-        this.nameInput = React.createRef();
-    }
     state = {
         isEditingOn: false
     };
 
+    static getDerivedStateFromProps(props, state) {
+        if (props.operation && props.operation.id !== state.id) {
+            return props.operation;
+        }
+        return null;
+    }
+
     onSubmit = e => {
         e.preventDefault();
 
-        const { operation, firestore, history } = this.props;
+        const { firestore, history } = this.props;
         const updOperation = {
-            name: this.nameInput.current.value.trim(),
+            ...this.state,
+            name: this.state.name.trim(),
             value:
-                this.valueInput.current.value.trim().length > 0
-                    ? this.valueInput.current.value.trim()
-                    : 0
+                this.state.value.trim().length > 0 ? this.state.value.trim() : 0
         };
 
         // update in firestore only if value > 0 and non empty name given
         if (updOperation.name.length > 0 && updOperation.value > 0) {
             firestore
                 .update(
-                    { collection: "budgetOperations", doc: operation.id },
+                    { collection: "budgetOperations", doc: this.state.id },
                     updOperation
                 )
                 .then(() => history.push("/operations"));
@@ -40,6 +40,7 @@ export class BudgetOperationDetails extends Component {
     };
 
     onChange = e => {
+        console.log(e.target.value);
         this.setState({ [e.target.name]: e.target.value });
     };
 
@@ -59,7 +60,7 @@ export class BudgetOperationDetails extends Component {
 
     render() {
         if (this.props.operation) {
-            const { date, value, name, id } = this.props.operation;
+            const { date, value, name, id } = this.state;
             const { isEditingOn } = this.state;
             return (
                 <div className="card m-2">
@@ -96,13 +97,13 @@ export class BudgetOperationDetails extends Component {
                                 <input
                                     type="text"
                                     name="date"
-                                    disabled
+                                    disabled={!isEditingOn}
                                     className="form-control"
-                                    defaultValue={
+                                    onChange={this.onChange}
+                                    value={
                                         date &&
                                         date.toDate().toLocaleDateString()
                                     }
-                                    onChange={this.onChange}
                                 />
                             </div>
                             <div className="form-group">
@@ -111,10 +112,9 @@ export class BudgetOperationDetails extends Component {
                                     type="number"
                                     name="value"
                                     className="form-control"
-                                    defaultValue={value}
+                                    value={value}
                                     onChange={this.onChange}
                                     disabled={!isEditingOn}
-                                    ref={this.valueInput}
                                 />
                             </div>
                             <div className="form-group">
@@ -123,10 +123,9 @@ export class BudgetOperationDetails extends Component {
                                     type="text"
                                     name="name"
                                     className="form-control"
-                                    defaultValue={name}
+                                    value={name}
                                     onChange={this.onChange}
                                     disabled={!isEditingOn}
-                                    ref={this.nameInput}
                                 />
                             </div>
                             {isEditingOn && (
@@ -147,7 +146,8 @@ export class BudgetOperationDetails extends Component {
 }
 
 BudgetOperationDetails.propTypes = {
-    firestore: PropTypes.object.isRequired
+    firestore: PropTypes.object.isRequired,
+    operation: PropTypes.object
 };
 
 export default compose(
