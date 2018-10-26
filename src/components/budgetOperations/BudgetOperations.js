@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 export class BudgetOperations extends Component {
     render() {
         const { operations } = this.props;
+        console.log(operations);
         if (operations) {
             return (
                 <div className="card m-2">
@@ -35,6 +36,7 @@ export class BudgetOperations extends Component {
                                     <th>Data</th>
                                     <th>Wartość</th>
                                     <th>Nazwa</th>
+                                    <th>Kategoria</th>
                                     <th />
                                 </tr>
                             </thead>
@@ -49,6 +51,10 @@ export class BudgetOperations extends Component {
                                         </td>
                                         <td>{operation.value}</td>
                                         <td>{operation.name}</td>
+                                        <td>
+                                            {operation.category &&
+                                                operation.category.toString()}
+                                        </td>
                                         <td>
                                             <Link
                                                 to={`/operation/${
