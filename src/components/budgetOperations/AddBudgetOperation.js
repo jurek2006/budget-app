@@ -16,41 +16,42 @@ export class AddBudgetOperation extends Component {
     };
 
     handleSubmit = e => {
+        // if form fields filled - stores operation in firestore
         e.preventDefault();
-        console.log(this.state);
-
-        const newOperation = {
-            ...this.state,
-            date: this.state.date && this.state.date.toDate()
-        };
-        const { firestore, history } = this.props;
-
-        firestore
-            .get({ collection: "categories", doc: this.state.category })
-            .then(categoryRef => {
-                console.log(categoryRef.ref);
-            });
-
+        const { name, date, value, category } = this.state;
         if (
-            Number(newOperation.value) > 0 &&
-            newOperation.name.trim().length > 0 &&
-            newOperation.date &&
-            newOperation.category &&
-            newOperation.category.trim().length > 0
+            Number(value) > 0 &&
+            name.trim().length > 0 &&
+            date &&
+            category &&
+            category.trim().length > 0
         ) {
+            const { firestore, history } = this.props;
             firestore
-                .get({ collection: "categories", doc: this.state.category })
+                .get({ collection: "categories", doc: category }) //find category in firestore to get its reference
                 .then(categoryRef => {
-                    firestore
-                        .add(
+                    if (categoryRef.exists) {
+                        // if category document exists in firebase - save operation
+                        firestore.add(
                             { collection: "budgetOperations" },
                             {
-                                ...newOperation,
-                                category: categoryRef.ref
+                                ...this.state,
+                                date: date && date.toDate(), //convert data from moment
+                                category: categoryRef.ref //store reference to the category instead of id
                             }
-                        )
-                        .then(() => history.push("/operations"));
+                        );
+                    } else {
+                        // got reference points to not existing document
+                        throw "Category not found";
+                    }
+                })
+                .then(() => history.push("/operations"))
+                .catch(err => {
+                    // TODO: handle when storing operation unsuccessful
+                    console.log(err);
                 });
+        } else {
+            // TODO: handle form fields validation
         }
     };
 
@@ -65,7 +66,6 @@ export class AddBudgetOperation extends Component {
     render() {
         const { categories } = this.props;
         if (categories) {
-            console.log(categories);
             const { date, value, name } = this.state;
             return (
                 <div className="card m-2">
