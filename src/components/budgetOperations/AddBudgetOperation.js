@@ -42,7 +42,7 @@ export class AddBudgetOperation extends Component {
                         );
                     } else {
                         // got reference points to not existing document
-                        throw "Category not found";
+                        throw new Error("Category not found");
                     }
                 })
                 .then(() => history.push("/operations"))

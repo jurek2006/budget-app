@@ -8,9 +8,9 @@ import { Link } from "react-router-dom";
 
 export class BudgetOperations extends Component {
     render() {
-        const { operations } = this.props;
-        console.log(operations);
-        if (operations) {
+        const { operations, categories } = this.props;
+        console.log(operations, categories);
+        if (operations && categories) {
             return (
                 <div className="card m-2">
                     <div className="card-header container-fluid">
@@ -53,7 +53,11 @@ export class BudgetOperations extends Component {
                                         <td>{operation.name}</td>
                                         <td>
                                             {operation.category &&
-                                                operation.category.toString()}
+                                                categories.find(
+                                                    category =>
+                                                        category.id ===
+                                                        operation.category.id
+                                                ).name}
                                         </td>
                                         <td>
                                             <Link
@@ -79,12 +83,22 @@ export class BudgetOperations extends Component {
 
 BudgetOperations.propTypes = {
     operations: PropTypes.array,
+    categories: PropTypes.array,
     firestore: PropTypes.object.isRequired
 };
 
 export default compose(
-    firestoreConnect([{ collection: "budgetOperations" }]),
+    firestoreConnect([
+        {
+            collection: "budgetOperations",
+            // where: [["name", "==", "Jurek Skowron"]],
+            orderBy: [["date"]]
+            // limit: 5
+        },
+        { collection: "categories" }
+    ]),
     connect((state, props) => ({
-        operations: state.firestore.ordered.budgetOperations
+        operations: state.firestore.ordered.budgetOperations,
+        categories: state.firestore.ordered.categories
     }))
 )(BudgetOperations);
