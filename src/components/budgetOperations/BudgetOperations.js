@@ -49,7 +49,17 @@ export class BudgetOperations extends Component {
                                                     .toDate()
                                                     .toLocaleDateString()}
                                         </td>
-                                        <td>{operation.value}</td>
+                                        <td>
+                                            <p className="text-right">
+                                                {new Intl.NumberFormat(
+                                                    "pl-PLN",
+                                                    {
+                                                        style: "currency",
+                                                        currency: "PLN"
+                                                    }
+                                                ).format(operation.value)}
+                                            </p>
+                                        </td>
                                         <td>{operation.name}</td>
                                         <td>
                                             {operation.category &&

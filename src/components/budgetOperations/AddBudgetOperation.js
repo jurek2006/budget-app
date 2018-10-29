@@ -35,7 +35,8 @@ export class AddBudgetOperation extends Component {
                         firestore.add(
                             { collection: "budgetOperations" },
                             {
-                                ...this.state,
+                                name,
+                                value: Number(value),
                                 date: date && date.toDate(), //convert data from moment
                                 category: categoryRef.ref //store reference to the category instead of id
                             }
@@ -89,6 +90,7 @@ export class AddBudgetOperation extends Component {
                                 <input
                                     type="number"
                                     name="value"
+                                    step="0.01"
                                     className="form-control"
                                     value={value}
                                     onChange={this.handleFieldChange}

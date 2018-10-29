@@ -37,7 +37,7 @@ export class BudgetOperationDetails extends Component {
         const { value, date, name } = this.state;
         const updOperation = {
             name,
-            value: value.length > 0 ? value : 0,
+            value: Number(value),
             date: date ? date.toDate() : null //convert date from moment to JS Data (handled in firestore)
         };
 
@@ -123,6 +123,7 @@ export class BudgetOperationDetails extends Component {
                                 <label htmlFor="value">Wartość:</label>
                                 <input
                                     type="number"
+                                    step="0.01"
                                     name="value"
                                     className="form-control"
                                     value={value}
