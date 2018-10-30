@@ -12,8 +12,26 @@ export class BudgetOperations extends Component {
         this.props.history.push(`/operations/month/${e.target.value}`);
     };
 
+    validateMonthParam = monthParam => {
+        if (moment(monthParam, "YYYY-MM", true).isValid()) {
+            // check if given monthParam is valid month date ("YYYY-MM") - if so returns it
+            return monthParam;
+        } else if (monthParam === "current") {
+            // if it is 'current' converts to "YYYY-MM" string for current month
+            return moment().format("YYYY-MM");
+        } else {
+            return "";
+        }
+    };
+
     render() {
-        const { operations, categories } = this.props;
+        const {
+            operations,
+            categories,
+            match: {
+                params: { month }
+            }
+        } = this.props;
         if (operations && categories) {
             return (
                 <React.Fragment>
@@ -41,8 +59,9 @@ export class BudgetOperations extends Component {
                                         name="category"
                                         className="form-control"
                                         onChange={this.handleMonthChange}
+                                        value={this.validateMonthParam(month)}
                                     >
-                                        <option value="">
+                                        <option value="" disabled>
                                             -- Wybierz miesiąc --
                                         </option>
                                         <option value="2018-11">
