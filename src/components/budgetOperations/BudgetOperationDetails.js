@@ -17,11 +17,12 @@ export class BudgetOperationDetails extends Component {
     static getDerivedStateFromProps(props, state) {
         // if got operation data from firestore set it to the state
         if (props.operation && props.operation.id !== state.id) {
-            const { date, value, name, id } = props.operation;
+            const { date, value, name, id, category } = props.operation;
             return {
                 id,
                 value,
                 name,
+                category,
                 date: date
                     ? moment(date.toDate()) //converts date from firestore type to Moment which is used by DatePicker
                     : null
@@ -34,21 +35,41 @@ export class BudgetOperationDetails extends Component {
         e.preventDefault();
 
         const { firestore, history } = this.props;
-        const { value, date, name } = this.state;
-        const updOperation = {
-            name,
-            value: Number(value),
-            date: date ? date.toDate() : null //convert date from moment to JS Data (handled in firestore)
-        };
+        const { name, date, value, category, id } = this.state;
 
-        // update in firestore only if value > 0 and non empty name given
-        if (updOperation.name.length > 0 && updOperation.value > 0) {
+        if (
+            Number(value) > 0 &&
+            name.trim().length > 0 &&
+            date &&
+            category &&
+            category.trim().length > 0
+        ) {
             firestore
-                .update(
-                    { collection: "budgetOperations", doc: this.state.id },
-                    updOperation
-                )
-                .then(() => history.push("/operations"));
+                .get({ collection: "categories", doc: category }) //find category in firestore to get its reference
+                .then(categoryRef => {
+                    if (categoryRef.exists) {
+                        // if category document exists in firebase - save operation with reference to chosen category
+                        firestore.update(
+                            { collection: "budgetOperations", doc: id },
+                            {
+                                name,
+                                category: categoryRef.ref, //story reference to the category
+                                value: Number(value),
+                                date: date ? date.toDate() : null //convert date from moment to JS Data (handled in firestore)
+                            }
+                        );
+                    } else {
+                        // got reference which points to not existing document
+                        throw new Error("Category not found");
+                    }
+                })
+                .then(() => history.push("/operations"))
+                .catch(err => {
+                    // TODO: handle when storing operation unsuccessful
+                    console.log(err);
+                });
+        } else {
+            // TODO: handle form fields validation
         }
     };
 
@@ -75,9 +96,9 @@ export class BudgetOperationDetails extends Component {
     };
 
     render() {
-        if (this.props.operation) {
-            const { date, value, name, id } = this.state;
-            const { isEditingOn } = this.state;
+        const { operation, categories } = this.props;
+        if (operation && categories) {
+            const { date, value, name, id, category, isEditingOn } = this.state;
             return (
                 <div className="card m-2">
                     <div className="card-header container-fluid">
@@ -142,6 +163,31 @@ export class BudgetOperationDetails extends Component {
                                     disabled={!isEditingOn}
                                 />
                             </div>
+                            <div className="form-group">
+                                <label htmlFor="category-select">
+                                    Kategoria:
+                                </label>
+
+                                <select
+                                    name="category"
+                                    className="form-control"
+                                    onChange={this.handleFieldChange}
+                                    disabled={!isEditingOn}
+                                    value={category ? category.id : ""}
+                                >
+                                    <option value="">
+                                        -- Wybierz kategorię --
+                                    </option>
+                                    {categories.map(category => (
+                                        <option
+                                            key={category.id}
+                                            value={category.id}
+                                        >
+                                            {category.name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
                             {isEditingOn && (
                                 <input
                                     type="submit"
@@ -170,6 +216,9 @@ export default compose(
             collection: "budgetOperations",
             storeAs: "operation",
             doc: props.match.params.id
+        },
+        {
+            collection: "categories"
         }
     ]),
     connect(({ firestore: { ordered } }, props) => ({
@@ -177,6 +226,7 @@ export default compose(
             ordered.operation &&
             ordered.operation.find(
                 operation => operation.id === props.match.params.id
-            )
+            ),
+        categories: ordered.categories
     }))
 )(BudgetOperationDetails);
