@@ -31,7 +31,7 @@ export class AddBudgetOperation extends Component {
                 .get({ collection: "categories", doc: category }) //find category in firestore to get its reference
                 .then(categoryRef => {
                     if (categoryRef.exists) {
-                        // if category document exists in firebase - save operation
+                        // if category document exists in firebase - save operation with reference to chosen category
                         firestore.add(
                             { collection: "budgetOperations" },
                             {
@@ -42,7 +42,7 @@ export class AddBudgetOperation extends Component {
                             }
                         );
                     } else {
-                        // got reference points to not existing document
+                        // got reference which points to not existing document
                         throw new Error("Category not found");
                     }
                 })

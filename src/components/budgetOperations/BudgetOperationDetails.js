@@ -16,13 +16,15 @@ export class BudgetOperationDetails extends Component {
 
     static getDerivedStateFromProps(props, state) {
         // if got operation data from firestore set it to the state
+
         if (props.operation && props.operation.id !== state.id) {
             const { date, value, name, id, category } = props.operation;
+            console.log("bieżąca kat.", props.operation, state);
             return {
                 id,
                 value,
                 name,
-                category,
+                category: category.id,
                 date: date
                     ? moment(date.toDate()) //converts date from firestore type to Moment which is used by DatePicker
                     : null
@@ -50,7 +52,10 @@ export class BudgetOperationDetails extends Component {
                     if (categoryRef.exists) {
                         // if category document exists in firebase - save operation with reference to chosen category
                         firestore.update(
-                            { collection: "budgetOperations", doc: id },
+                            {
+                                collection: "budgetOperations",
+                                doc: id
+                            },
                             {
                                 name,
                                 category: categoryRef.ref, //story reference to the category
@@ -63,7 +68,9 @@ export class BudgetOperationDetails extends Component {
                         throw new Error("Category not found");
                     }
                 })
-                .then(() => history.push("/operations"))
+                .then(() => {
+                    history.push("/operations");
+                })
                 .catch(err => {
                     // TODO: handle when storing operation unsuccessful
                     console.log(err);
@@ -96,6 +103,9 @@ export class BudgetOperationDetails extends Component {
     };
 
     render() {
+        if (!this.state.test) {
+            this.setState({ test: "test" });
+        }
         const { operation, categories } = this.props;
         if (operation && categories) {
             const { date, value, name, id, category, isEditingOn } = this.state;
@@ -173,7 +183,7 @@ export class BudgetOperationDetails extends Component {
                                     className="form-control"
                                     onChange={this.handleFieldChange}
                                     disabled={!isEditingOn}
-                                    value={category ? category.id : ""}
+                                    value={category ? category : ""}
                                 >
                                     <option value="">
                                         -- Wybierz kategorię --
@@ -207,7 +217,8 @@ export class BudgetOperationDetails extends Component {
 
 BudgetOperationDetails.propTypes = {
     firestore: PropTypes.object.isRequired,
-    operation: PropTypes.object
+    operation: PropTypes.object,
+    categories: PropTypes.array
 };
 
 export default compose(
