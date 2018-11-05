@@ -33,12 +33,7 @@ class App extends Component {
                             <Route exact path="/" component={Dashboard} />
                             <Route
                                 exact
-                                path="/operations/"
-                                component={BudgetOperations}
-                            />
-                            <Route
-                                exact
-                                path="/operations/month/:month"
+                                path="/operations/:month?"
                                 component={BudgetOperations}
                             />
                             <Route

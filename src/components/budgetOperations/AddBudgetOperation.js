@@ -20,7 +20,7 @@ export class AddBudgetOperation extends Component {
         e.preventDefault();
         const { name, date, value, category } = this.state;
         if (
-            Number(value) > 0 &&
+            !Number.isNaN(value) &&
             name.trim().length > 0 &&
             date &&
             category &&

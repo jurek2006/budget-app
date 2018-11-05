@@ -9,18 +9,15 @@ import moment from "moment";
 
 export class BudgetOperations extends Component {
     handleMonthChange = e => {
-        this.props.history.push(`/operations/month/${e.target.value}`);
+        this.props.history.push(`/operations/${e.target.value}`);
     };
 
     validateMonthParam = monthParam => {
         if (moment(monthParam, "YYYY-MM", true).isValid()) {
             // check if given monthParam is valid month date ("YYYY-MM") - if so returns it
             return monthParam;
-        } else if (monthParam === "current") {
-            // if it is 'current' converts to "YYYY-MM" string for current month
-            return moment().format("YYYY-MM");
         } else {
-            return "";
+            return moment().format("YYYY-MM");
         }
     };
 
@@ -155,8 +152,8 @@ export default compose(
             orderBy: ["date"],
             where: (({ month }) => {
                 let date;
-                if (month === "current") {
-                    // if month parameter is "current"- find operations beteween 1st and last day of current month
+                if (!month) {
+                    // if month parameter is not - find operations beteween 1st and last day of current month
                     date = moment().startOf("month");
                 } else {
                     // if month is valid 'YYYY-MM' parameter - find operations beteween 1st and last day of given month
