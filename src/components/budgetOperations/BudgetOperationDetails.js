@@ -68,9 +68,7 @@ export class BudgetOperationDetails extends Component {
                         throw new Error("Category not found");
                     }
                 })
-                .then(() => {
-                    history.push("/operations");
-                })
+                .then(() => history.push("/operations"))
                 .catch(err => {
                     // TODO: handle when storing operation unsuccessful
                     console.log(err);
