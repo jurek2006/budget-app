@@ -23,7 +23,7 @@ export class EditCategory extends Component {
         // Update category in firestore
         firestore
             .update({ collection: "categories", doc: category.id }, updCategory)
-            .then(history.push("/categories"));
+            .then(() => history.push("/categories"));
     };
 
     render() {
