@@ -8,8 +8,54 @@ import { Link } from "react-router-dom";
 import moment from "moment";
 
 export class BudgetOperations extends Component {
+    state = {
+        operationType: "all"
+    };
+
+    componentDidUpdate() {
+        const { type, month } = this.props.match.params;
+        if (this.state.operationType !== type) {
+            if (type === "expenses" || type === "incomes") {
+                this.setState({
+                    operationType: type
+                });
+            } else {
+                this.setState({
+                    operationType: "all"
+                });
+                this.props.history.push(`/operations/all/${month}`);
+            }
+        }
+    }
+
+    filterOperations = budgetOperations => {
+        // filter budget operations depends on operationType parameter (can be 'all', 'expenses' or 'incomes')
+        switch (this.state.operationType) {
+            case "expenses":
+                return budgetOperations.filter(
+                    operation => operation.value < 0
+                );
+                break;
+            case "incomes":
+                return budgetOperations.filter(
+                    operation => operation.value >= 0
+                );
+                break;
+            default:
+                return budgetOperations;
+        }
+    };
+
     handleMonthChange = e => {
-        this.props.history.push(`/operations/${e.target.value}`);
+        const { operationType } = this.state;
+        this.props.history.push(
+            `/operations/${operationType}/${e.target.value}`
+        );
+    };
+
+    handleTypeChange = e => {
+        const { month } = this.props.match.params;
+        this.props.history.push(`/operations/${e.target.value}/${month}`);
     };
 
     validateMonthParam = monthParam => {
@@ -29,7 +75,9 @@ export class BudgetOperations extends Component {
                 params: { month }
             }
         } = this.props;
+        const { operationType } = this.state;
         if (operations && categories) {
+            const filteredOperations = this.filterOperations(operations);
             return (
                 <React.Fragment>
                     <div className="card m-2">
@@ -75,6 +123,21 @@ export class BudgetOperations extends Component {
                                         </option>
                                     </select>
                                 </div>
+
+                                <div className="form-group">
+                                    <select
+                                        name="type"
+                                        className="form-control"
+                                        value={this.state.operationType}
+                                        onChange={this.handleTypeChange}
+                                    >
+                                        <option value="all">Wszystkie</option>
+                                        <option value="expenses">
+                                            Wydatki
+                                        </option>
+                                        <option value="incomes">Wpływy</option>
+                                    </select>
+                                </div>
                             </nav>
                             <table className="table table-striped">
                                 <thead className="thead-inverse">
@@ -87,7 +150,7 @@ export class BudgetOperations extends Component {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {operations.map(operation => (
+                                    {filteredOperations.map(operation => (
                                         <tr key={operation.id}>
                                             <td>
                                                 {operation.date &&
