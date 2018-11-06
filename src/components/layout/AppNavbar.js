@@ -4,7 +4,7 @@ import { Link, NavLink } from "react-router-dom";
 export default function AppNavbar() {
     return (
         <nav className="navbar navbar-expand-lg navbar-light bg-danger">
-            <Link className="navbar-brand" to="/">
+            <Link className="navbar-brand ml-2" to="/">
                 Budget App
             </Link>
             <button

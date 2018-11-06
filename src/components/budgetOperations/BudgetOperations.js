@@ -80,133 +80,113 @@ export class BudgetOperations extends Component {
         if (operations && categories) {
             return (
                 <React.Fragment>
-                    <div className="card m-2">
-                        <div className="card-header container-fluid">
-                            <div className="row align-items-center">
-                                <div className="col">
-                                    <h1>Wydatki / wpływy</h1>
-                                </div>
-                                <div className="col-auto">
-                                    <Link
-                                        className="btn btn-primary ml-auto"
-                                        to="/operation/add"
-                                    >
-                                        <i className="fas fa-plus" /> Dodaj
-                                        wydatek/wpływ
-                                    </Link>
-                                </div>
-                            </div>
+                    <nav className="navbar bg-light">
+                        {/* wybór miesiąca do wyświetlenia operacji */}
+                        <div className="form-group my-auto">
+                            <select
+                                name="category"
+                                className="form-control"
+                                onChange={this.handleMonthChange}
+                                value={this.validateMonthParam(month)}
+                            >
+                                <option value="" disabled>
+                                    -- Wybierz miesiąc --
+                                </option>
+                                <option value="2018-11">Listopad 2018</option>
+                                <option value="2018-10">
+                                    Październik 2018
+                                </option>
+                                <option value="2018-09">Wrzesień 2018</option>
+                                <option value="2018-08">Sierpień 2018</option>
+                            </select>
                         </div>
-                        <div className="card-body">
-                            <nav className="navbar bg-light">
-                                <div className="form-group">
-                                    <select
-                                        name="category"
-                                        className="form-control"
-                                        onChange={this.handleMonthChange}
-                                        value={this.validateMonthParam(month)}
-                                    >
-                                        <option value="" disabled>
-                                            -- Wybierz miesiąc --
-                                        </option>
-                                        <option value="2018-11">
-                                            Listopad 2018
-                                        </option>
-                                        <option value="2018-10">
-                                            Październik 2018
-                                        </option>
-                                        <option value="2018-09">
-                                            Wrzesień 2018
-                                        </option>
-                                        <option value="2018-08">
-                                            Sierpień 2018
-                                        </option>
-                                    </select>
-                                </div>
 
-                                <div className="form-group">
-                                    <select
-                                        name="type"
-                                        className="form-control"
-                                        value={this.state.operationType}
-                                        onChange={this.handleTypeChange}
-                                    >
-                                        <option value="all">Wszystkie</option>
-                                        <option value="expenses">
-                                            Wydatki
-                                        </option>
-                                        <option value="incomes">Wpływy</option>
-                                    </select>
-                                </div>
-                            </nav>
-                            <table className="table table-striped">
-                                <thead className="thead-inverse">
-                                    <tr>
-                                        <th>Data</th>
-                                        <th>Wartość</th>
-                                        <th>Nazwa</th>
-                                        <th>Kategoria</th>
-                                        <th />
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {//filter expenses, incomes or all operations
-                                    this.filterOperations(operations).map(
-                                        operation => (
-                                            <tr
-                                                key={operation.id}
-                                                className={classnames({
-                                                    "text-danger":
-                                                        operation.value < 0,
-                                                    "text-success":
-                                                        operation.value > 0
-                                                })}
-                                            >
-                                                <td>
-                                                    {operation.date &&
-                                                        operation.date
-                                                            .toDate()
-                                                            .toLocaleDateString()}
-                                                </td>
-                                                <td>
-                                                    <p className="text-right">
-                                                        {new Intl.NumberFormat(
-                                                            "pl-PLN",
-                                                            {
-                                                                style:
-                                                                    "currency",
-                                                                currency: "PLN"
-                                                            }
-                                                        ).format(
-                                                            operation.value
-                                                        )}
-                                                    </p>
-                                                </td>
-                                                <td>{operation.name}</td>
-                                                <td>
-                                                    {operation.category &&
-                                                        categories.find(
-                                                            category =>
-                                                                category.id ===
-                                                                operation
-                                                                    .category.id
-                                                        ).name}
-                                                </td>
-                                                <td>
-                                                    <Link
-                                                        to={`/operation/${
-                                                            operation.id
-                                                        }`}
-                                                    >
-                                                        Szczegóły
-                                                    </Link>
-                                                </td>
-                                            </tr>
-                                        )
-                                    )}
-                                </tbody>
-                            </table>
+                        {/* wybór: wszystkie, wydatki, wpływy */}
+                        <div className="form-group ml-1 my-auto">
+                            <select
+                                name="type"
+                                className="form-control"
+                                value={this.state.operationType}
+                                onChange={this.handleTypeChange}
+                            >
+                                <option value="all">Wpływy i wydatki</option>
+                                <option value="expenses">Wydatki</option>
+                                <option value="incomes">Wpływy</option>
+                            </select>
                         </div>
+
+                        <Link
+                            className="btn btn-primary ml-auto"
+                            to="/operation/add"
+                        >
+                            <i className="fas fa-plus" /> Dodaj wydatek/wpływ
+                        </Link>
+                    </nav>
+                    <div className="m-3">
+                        <table className="table table-sm table-striped table-responsive-sm table-hover">
+                            <thead className="thead-inverse">
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Wartość</th>
+                                    <th>Nazwa</th>
+                                    <th>Kategoria</th>
+                                    <th />
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {//filter expenses, incomes or all operations
+                                this.filterOperations(operations).map(
+                                    operation => (
+                                        <tr
+                                            key={operation.id}
+                                            className={classnames({
+                                                "text-danger":
+                                                    operation.value < 0,
+                                                "text-success":
+                                                    operation.value > 0
+                                            })}
+                                        >
+                                            <td>
+                                                {operation.date &&
+                                                    operation.date
+                                                        .toDate()
+                                                        .toLocaleDateString()}
+                                            </td>
+                                            <td>
+                                                <p className="text-right m-0">
+                                                    {new Intl.NumberFormat(
+                                                        "pl-PLN",
+                                                        {
+                                                            style: "currency",
+                                                            currency: "PLN"
+                                                        }
+                                                    ).format(operation.value)}
+                                                </p>
+                                            </td>
+                                            <td>{operation.name}</td>
+                                            <td>
+                                                {operation.category &&
+                                                    categories.find(
+                                                        category =>
+                                                            category.id ===
+                                                            operation.category
+                                                                .id
+                                                    ).name}
+                                            </td>
+                                            <td>
+                                                <Link
+                                                    to={`/operation/${
+                                                        operation.id
+                                                    }`}
+                                                >
+                                                    Szczegóły
+                                                </Link>
+                                            </td>
+                                        </tr>
+                                    )
+                                )}
+                            </tbody>
+                        </table>
                     </div>
                 </React.Fragment>
             );
