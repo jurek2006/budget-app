@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 import Spinner from "../layout/Spinner";
 import { Link } from "react-router-dom";
 import moment from "moment";
+import classnames from "classnames";
 
 export class BudgetOperations extends Component {
     state = {
@@ -77,7 +78,6 @@ export class BudgetOperations extends Component {
         } = this.props;
         const { operationType } = this.state;
         if (operations && categories) {
-            const filteredOperations = this.filterOperations(operations);
             return (
                 <React.Fragment>
                     <div className="card m-2">
@@ -150,46 +150,60 @@ export class BudgetOperations extends Component {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {filteredOperations.map(operation => (
-                                        <tr key={operation.id}>
-                                            <td>
-                                                {operation.date &&
-                                                    operation.date
-                                                        .toDate()
-                                                        .toLocaleDateString()}
-                                            </td>
-                                            <td>
-                                                <p className="text-right">
-                                                    {new Intl.NumberFormat(
-                                                        "pl-PLN",
-                                                        {
-                                                            style: "currency",
-                                                            currency: "PLN"
-                                                        }
-                                                    ).format(operation.value)}
-                                                </p>
-                                            </td>
-                                            <td>{operation.name}</td>
-                                            <td>
-                                                {operation.category &&
-                                                    categories.find(
-                                                        category =>
-                                                            category.id ===
-                                                            operation.category
-                                                                .id
-                                                    ).name}
-                                            </td>
-                                            <td>
-                                                <Link
-                                                    to={`/operation/${
-                                                        operation.id
-                                                    }`}
-                                                >
-                                                    Szczegóły
-                                                </Link>
-                                            </td>
-                                        </tr>
-                                    ))}
+                                    {//filter expenses, incomes or all operations
+                                    this.filterOperations(operations).map(
+                                        operation => (
+                                            <tr
+                                                key={operation.id}
+                                                className={classnames({
+                                                    "text-danger":
+                                                        operation.value < 0,
+                                                    "text-success":
+                                                        operation.value > 0
+                                                })}
+                                            >
+                                                <td>
+                                                    {operation.date &&
+                                                        operation.date
+                                                            .toDate()
+                                                            .toLocaleDateString()}
+                                                </td>
+                                                <td>
+                                                    <p className="text-right">
+                                                        {new Intl.NumberFormat(
+                                                            "pl-PLN",
+                                                            {
+                                                                style:
+                                                                    "currency",
+                                                                currency: "PLN"
+                                                            }
+                                                        ).format(
+                                                            operation.value
+                                                        )}
+                                                    </p>
+                                                </td>
+                                                <td>{operation.name}</td>
+                                                <td>
+                                                    {operation.category &&
+                                                        categories.find(
+                                                            category =>
+                                                                category.id ===
+                                                                operation
+                                                                    .category.id
+                                                        ).name}
+                                                </td>
+                                                <td>
+                                                    <Link
+                                                        to={`/operation/${
+                                                            operation.id
+                                                        }`}
+                                                    >
+                                                        Szczegóły
+                                                    </Link>
+                                                </td>
+                                            </tr>
+                                        )
+                                    )}
                                 </tbody>
                             </table>
                         </div>
