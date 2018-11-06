@@ -19,7 +19,6 @@ export class BudgetOperationDetails extends Component {
 
         if (props.operation && props.operation.id !== state.id) {
             const { date, value, name, id, category } = props.operation;
-            console.log("bieżąca kat.", props.operation, state);
             return {
                 id,
                 value,
@@ -101,9 +100,6 @@ export class BudgetOperationDetails extends Component {
     };
 
     render() {
-        if (!this.state.test) {
-            this.setState({ test: "test" });
-        }
         const { operation, categories } = this.props;
         if (operation && categories) {
             const { date, value, name, id, category, isEditingOn } = this.state;
