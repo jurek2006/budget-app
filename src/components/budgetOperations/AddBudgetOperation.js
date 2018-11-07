@@ -57,7 +57,7 @@ export class AddBudgetOperation extends Component {
     };
 
     handleFieldChange = e => {
-        this.setState({ [e.target.name]: e.target.value.trim() });
+        this.setState({ [e.target.name]: e.target.value });
     };
 
     handleDateChange = date => {

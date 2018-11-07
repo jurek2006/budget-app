@@ -39,7 +39,7 @@ export class BudgetOperationDetails extends Component {
         const { name, date, value, category, id } = this.state;
 
         if (
-            Number(value) > 0 &&
+            !Number.isNaN(value) &&
             name.trim().length > 0 &&
             date &&
             category &&
@@ -78,7 +78,7 @@ export class BudgetOperationDetails extends Component {
     };
 
     handleFieldChange = e => {
-        this.setState({ [e.target.name]: e.target.value.trim() });
+        this.setState({ [e.target.name]: e.target.value });
     };
 
     handleDateChange = date => {
