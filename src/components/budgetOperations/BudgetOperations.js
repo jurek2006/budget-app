@@ -68,6 +68,20 @@ export class BudgetOperations extends Component {
         }
     };
 
+    getCategoryName = (operationCategory, categories) => {
+        /* REFACTOR_NEEDED temporary solution for situation when category is assigned to the operation, 
+        but the category has been deleted - so there is operation.category reference 
+        but we can not access category.name as it doesn't exists anf we got error*/
+        // if there is no category.name returns NON_EXISTING_CATEGORY
+        const foundCategory =
+            operationCategory &&
+            categories.find(category => category.id === operationCategory.id);
+        if (foundCategory && foundCategory.name) {
+            return foundCategory.name;
+        }
+        return "NON_EXISTING_CATEGORY";
+    };
+
     render() {
         const {
             operations,
@@ -181,12 +195,13 @@ export class BudgetOperations extends Component {
                                         </td>
                                         <td>{operation.name}</td>
                                         <td>
-                                            {operation.category &&
-                                                categories.find(
-                                                    category =>
-                                                        category.id ===
-                                                        operation.category.id
-                                                ).name}
+                                            {/* REFACTOR_NEEDED temporary solution for situation when category is assigned to the operation, 
+                                            but the category has been deleted - so there is operation.category reference 
+                                            but we can not access category.name as it doesn't exists anf we got error*/
+                                            this.getCategoryName(
+                                                operation.category,
+                                                categories
+                                            )}
                                         </td>
                                         <td>
                                             <Link
